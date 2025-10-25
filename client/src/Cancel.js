@@ -1,10 +1,14 @@
 import React from "react";
 
-export default function Cancel() {
+const Cancel = () => {
   return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h1>❌ Payment Cancelled</h1>
-      <p>Your payment was not completed. Please try again.</p>
+    <div style={{ padding: "2rem", textAlign: "center" }}>
+      <h2>❌ Payment Cancelled</h2>
+      <p>Your order was cancelled. You can try again anytime.</p>
+      <a href="/" style={{ color: "#007bff" }}>Back to Home</a>
     </div>
   );
-}
+};
+
+export default Cancel;
+

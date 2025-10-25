@@ -1,43 +1,45 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  const addToCart = (product, type, quantity) => {
+  const addToCart = (product, type = "Box", quantity = 1) => {
+    if (!product) {
+      console.error("Product is missing:", product);
+      return;
+    }
+
+    // Determine price based on type
+    const price =
+      type === "Box" ? product.boxPrice || 0 : product.packetPrice || 0;
+
     setCart(prev => {
-      const existing = prev.find(p => p.id === product.id && p.type === type);
+      const existing = prev.find(
+        item => item.id === product.id && item.type === type
+      );
+
       if (existing) {
-        return prev.map(p =>
-          p.id === product.id && p.type === type
-            ? { ...p, quantity: p.quantity + quantity }
-            : p
+        // If already in cart, update quantity
+        return prev.map(item =>
+          item.id === product.id && item.type === type
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         );
       }
-      return [...prev, { ...product, type, quantity }];
+
+      // Otherwise, add new item with price
+      return [...prev, { ...product, type, quantity, price }];
     });
-  };
-
-  const updateCartItem = (productId, type, quantity) => {
-    setCart(prev =>
-      prev.map(p =>
-        p.id === productId && p.type === type ? { ...p, quantity } : p
-      )
-    );
-  };
-
-  const removeFromCart = (productId, type) => {
-    setCart(prev => prev.filter(p => !(p.id === productId && p.type === type)));
   };
 
   const clearCart = () => setCart([]);
 
   return (
-    <CartContext.Provider
-      value={{ cart, addToCart, updateCartItem, removeFromCart, clearCart }}
-    >
+    <CartContext.Provider value={{ cart, addToCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
 };
+

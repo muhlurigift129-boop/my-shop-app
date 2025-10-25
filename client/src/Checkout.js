@@ -1,48 +1,92 @@
-import React, { useState, useContext } from 'react';
-import { CartContext } from './CartContext';
+import React, { useContext } from "react";
+import { CartContext } from "./CartContext";
 
 const Checkout = () => {
   const { cart, clearCart } = useContext(CartContext);
-  const [deliveryType, setDeliveryType] = useState('Delivery');
-  const [address, setAddress] = useState('');
 
-  const subtotal = cart.reduce((sum, item) => {
-    const price = item.type === 'Box' ? item.boxPrice : item.packetPrice;
-    return sum + price * item.quantity;
-  }, 0);
+  const handlePayFastCheckout = () => {
+    // Create a form and send data to PayFast
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://www.payfast.co.za/eng/process";
 
-  const deliveryFee = subtotal > 600 ? 0 : 50;
-  const total = subtotal + deliveryFee;
+    // ✅ Merchant details (these should match your .env or PayFast account)
+    const data = {
+      merchant_id: "21640826", // your PayFast Merchant ID
+      merchant_key: "lbwzjvmjwbsfj", // your PayFast Merchant Key
+      return_url: "https://mg-s-treders.onrender.com/success",
+      cancel_url: "https://mg-s-treders.onrender.com/cancel",
+      notify_url: "https://mg-s-treders.onrender.com/api/payfast/notify",
+      amount: cart
+        .reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
+        .toFixed(2),
+      item_name: "MGS Traders Order",
+      email_confirmation: 1,
+      confirmation_address: "your@email.com", // optional
+      custom_str1: "MGS App Checkout",
+    };
 
-  const handlePayment = async () => {
-    const res = await fetch('http://localhost:5000/pay', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: total, item_name: 'Noodles Order' })
-    });
-    const data = await res.json();
-    clearCart();
-    window.location.href = data.url;
+    // Add form fields dynamically
+    for (const key in data) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = data[key];
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
   };
 
   return (
-    <div>
-      <h1>Checkout</h1>
-      <label>
-        <input type="radio" checked={deliveryType==='Delivery'} onChange={()=>setDeliveryType('Delivery')}/> Delivery
-      </label>
-      <label>
-        <input type="radio" checked={deliveryType==='Collect'} onChange={()=>setDeliveryType('Collect')}/> Collect
-      </label>
+    <div style={{ padding: "2rem" }}>
+      <h2>Checkout</h2>
 
-      {deliveryType==='Delivery' && (
-        <input type="text" placeholder="Enter your address" value={address} onChange={e=>setAddress(e.target.value)} />
+      {cart.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <>
+          <ul>
+            {cart.map((item, index) => (
+              <li key={index}>
+                {item.name} - {item.quantity} × R{(item.price || 0).toFixed(2)}
+              </li>
+            ))}
+          </ul>
+
+          <h3>
+            Total: R
+            {cart
+              .reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
+              .toFixed(2)}
+          </h3>
+
+          <button
+            onClick={handlePayFastCheckout}
+            style={{
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              padding: "12px 25px",
+              borderRadius: "8px",
+              fontSize: "17px",
+              cursor: "pointer",
+              fontWeight: "500",
+              boxShadow: "0 4px 10px rgba(0, 123, 255, 0.4)",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
+          >
+            💳 Pay with PayFast
+          </button>
+
+        </>
       )}
-
-      <h2>Total: R{total}</h2>
-      <button onClick={handlePayment}>Pay Now</button>
     </div>
   );
 };
 
 export default Checkout;
+

@@ -1,0 +1,35 @@
+.welcome-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #007bff, #00a2ff);
+  color: white;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+}
+
+.welcome-logo {
+  width: 160px;
+  height: 160px;
+  margin-bottom: 25px;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+  animation: pulse 2s infinite;
+}
+
+.welcome-text {
+  font-size: 2.3rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
