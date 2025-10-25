@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./Home";           // ✅ Import Home
 import ProductList from "./ProductList";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
@@ -42,6 +43,7 @@ function App() {
       {/* ✅ Page Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/products" element={<ProductList />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
