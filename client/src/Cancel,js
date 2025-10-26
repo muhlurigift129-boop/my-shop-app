@@ -1,0 +1,43 @@
+import React from "react";
+
+const Cancel = () => (
+  <div
+    style={{
+      maxWidth: "600px",
+      margin: "50px auto",
+      padding: "25px",
+      textAlign: "center",
+      background: "#fff4f4",
+      borderRadius: "15px",
+      boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+      fontFamily: "Poppins, sans-serif",
+    }}
+  >
+    <h1 style={{ color: "#ff1744" }}>❌ Payment Cancelled</h1>
+    <p style={{ fontSize: "16px", marginTop: "10px" }}>
+      Your payment was not completed. You can try again.
+    </p>
+    <button
+      onClick={() => (window.location.href = "/checkout")}
+      style={{
+        marginTop: "25px",
+        padding: "12px 25px",
+        fontSize: "16px",
+        fontWeight: "bold",
+        color: "#fff",
+        background: "linear-gradient(135deg, #ff1744, #d50000)",
+        border: "none",
+        borderRadius: "35px",
+        cursor: "pointer",
+        boxShadow: "0 4px 15px rgba(255, 23, 68, 0.4)",
+        transition: "all 0.3s ease",
+      }}
+      onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+      onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+    >
+      Try Again 🔁
+    </button>
+  </div>
+);
+
+export default Cancel;
