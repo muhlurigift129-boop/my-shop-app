@@ -17,38 +17,53 @@ const JWT_SECRET = "mgs-secret-key";
 
 // SIGNUP
 router.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
-  const db = await dbPromise;
+  try {
+    const { name, email, password } = req.body;
+    const db = await dbPromise;
 
-  const existingUser = await db.get("SELECT * FROM users WHERE email = ?", [email]);
-  if (existingUser) return res.status(400).json({ error: "Email already in use" });
+    const existingUser = await db.get("SELECT * FROM users WHERE email = ?", [email]);
+    if (existingUser) return res.status(400).json({ error: "Email already registered" });
 
-  const hashed = await bcrypt.hash(password, 10);
-  await db.run("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [
-    name,
-    email,
-    hashed,
-  ]);
+    const hashed = await bcrypt.hash(password, 10);
+    await db.run("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [
+      name,
+      email,
+      hashed,
+    ]);
 
-  res.json({ message: "Signup successful" });
+    res.json({ message: "Signup successful" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error during signup" });
+  }
 });
 
 // LOGIN
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const db = await dbPromise;
+  try {
+    const { email, password } = req.body;
+    const db = await dbPromise;
 
-  const user = await db.get("SELECT * FROM users WHERE email = ?", [email]);
-  if (!user) return res.status(400).json({ error: "User not found" });
+    const user = await db.get("SELECT * FROM users WHERE email = ?", [email]);
+    if (!user) return res.status(400).json({ error: "User not found" });
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ error: "Invalid password" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ error: "Invalid password" });
 
-  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: "2h",
-  });
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: "2h",
+    });
 
-  res.json({ message: "Login successful", token, user: { id: user.id, name: user.name } });
+    res.json({
+      message: "Login successful",
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error during login" });
+  }
 });
 
 export default router;
+

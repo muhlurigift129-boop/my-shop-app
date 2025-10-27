@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   // ✅ signup function
   const signup = async (email, password) => {
     try {
-      const res = await fetch("https://mg-s-traders.onrender.com/api/auth/signup", {
+      const res = await fetch(`${API_BASE}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
