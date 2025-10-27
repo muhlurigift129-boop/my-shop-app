@@ -1,3 +1,11 @@
+node_modules/
+client/node_modules/
+server/node_modules/
+.env
+.DS_Store
+database.sqlite
+build/
+dist/
 # Logs
 logs
 *.log

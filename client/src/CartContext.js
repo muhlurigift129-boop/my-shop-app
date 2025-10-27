@@ -5,42 +5,33 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // Add product to cart
-  const addToCart = (product, type, price) => {
-    setCart((prev) => {
-      const existing = prev.find(
-        (item) => item.id === product.id && item.type === type
-      );
-
+  const addToCart = (product, type, price, quantity = 1) => {
+    setCart(prev => {
+      const existing = prev.find(it => it.id === product.id && it.type === type);
       if (existing) {
-        return prev.map((item) =>
-          item.id === product.id && item.type === type
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+        return prev.map(it =>
+          it.id === product.id && it.type === type ? { ...it, quantity: it.quantity + quantity, total: (it.quantity + quantity) * it.price } : it
         );
       }
-
-      return [...prev, { ...product, type, price, quantity: 1 }];
+      const item = { ...product, type, price, quantity, total: price * quantity };
+      return [...prev, item];
     });
   };
 
-  // Remove product from cart
   const removeFromCart = (productId, type) => {
-    setCart((prev) =>
-      prev.filter((item) => !(item.id === productId && item.type === type))
-    );
+    setCart(prev => prev.filter(it => !(it.id === productId && it.type === type)));
   };
 
-  // Clear entire cart
+  const updateQuantity = (productId, type, quantity) => {
+    setCart(prev => prev.map(it => it.id === productId && it.type === type ? { ...it, quantity, total: it.price * quantity } : it));
+  };
+
   const clearCart = () => setCart([]);
 
-  // Calculate total
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = cart.reduce((sum, item) => sum + (item.total || 0), 0);
 
   return (
-    <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, total }}
-    >
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, total, setCart }}>
       {children}
     </CartContext.Provider>
   );

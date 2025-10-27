@@ -1,8 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "./CartContext";
 
 const Checkout = () => {
-  const { cart, clearCart } = useContext(CartContext);
+  const { cart, total, clearCart } = useContext(CartContext);
+  const [deliveryOption, setDeliveryOption] = useState("Delivery");
+  const [address, setAddress] = useState("");
+  const [deliveryFee, setDeliveryFee] = useState(0);
+
+  useEffect(() => {
+    if (deliveryOption === "Delivery" && total < 600) setDeliveryFee(50);
+    else setDeliveryFee(0);
+  }, [deliveryOption, total]);
 
   const handlePayFastCheckout = () => {
     if (cart.length === 0) {
@@ -10,28 +18,24 @@ const Checkout = () => {
       return;
     }
 
-    // Create a form and send data to PayFast
+    const amount = (total + deliveryFee).toFixed(2);
     const form = document.createElement("form");
     form.method = "POST";
-    form.action = "https://www.payfast.co.za/eng/process";
+    form.action = "https://sandbox.payfast.co.za/eng/process";
 
-    // ✅ Merchant details (replace with your real details when live)
     const data = {
-      merchant_id: "21640826", // your PayFast Merchant ID
-      merchant_key: "lbwzjvmjwbsfj", // your PayFast Merchant Key
+      merchant_id: "21640826", // replace with your PayFast merchant ID
+      merchant_key: "lbwzjvmjwbsfj", // replace with your PayFast key
       return_url: "https://mg-s-treders.onrender.com/success",
       cancel_url: "https://mg-s-treders.onrender.com/cancel",
       notify_url: "https://mg-s-treders.onrender.com/api/payfast/notify",
-      amount: cart
-        .reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
-        .toFixed(2),
+      amount,
       item_name: "MGS Traders Order",
       email_confirmation: 1,
-      confirmation_address: "your@email.com", // optional
+      confirmation_address: "your@email.com",
       custom_str1: "MGS App Checkout",
     };
 
-    // Add form fields dynamically
     for (const key in data) {
       const input = document.createElement("input");
       input.type = "hidden";
@@ -49,7 +53,7 @@ const Checkout = () => {
       style={{
         maxWidth: "700px",
         margin: "40px auto",
-        backgroundColor: "white",
+        backgroundColor: "#f8f9fa",
         padding: "30px",
         borderRadius: "15px",
         boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
@@ -66,16 +70,47 @@ const Checkout = () => {
         Checkout
       </h2>
 
+      <div>
+        <label>
+          <input
+            type="radio"
+            checked={deliveryOption === "Delivery"}
+            onChange={() => setDeliveryOption("Delivery")}
+          />
+          Delivery
+        </label>
+
+        <label style={{ marginLeft: 20 }}>
+          <input
+            type="radio"
+            checked={deliveryOption === "Collection"}
+            onChange={() => setDeliveryOption("Collection")}
+          />
+          Collection
+        </label>
+      </div>
+
+      {deliveryOption === "Delivery" && (
+        <div style={{ marginTop: 12 }}>
+          <textarea
+            placeholder="Enter delivery address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            style={{ width: "100%", height: "60px", borderRadius: "8px" }}
+          />
+        </div>
+      )}
+
       {cart.length === 0 ? (
-        <p style={{ textAlign: "center", fontSize: "18px", color: "#555" }}>
+        <p style={{ textAlign: "center", fontSize: "18px", color: "#666" }}>
           Your cart is empty.
         </p>
       ) : (
         <>
           <ul style={{ listStyle: "none", padding: 0 }}>
-            {cart.map((item, index) => (
+            {cart.map((item, i) => (
               <li
-                key={index}
+                key={i}
                 style={{
                   padding: "10px 0",
                   borderBottom: "1px solid #eee",
@@ -85,13 +120,15 @@ const Checkout = () => {
                 }}
               >
                 <span>
-                  {item.name} × {item.quantity}
+                  {item.type} × {item.quantity}
                 </span>
-                <strong>R{(item.price || 0) * item.quantity}</strong>
+                <strong>R{(item.price * item.quantity).toFixed(2)}</strong>
               </li>
             ))}
           </ul>
 
+          <p>Subtotal: R{total.toFixed(2)}</p>
+          <p>Delivery fee: R{deliveryFee.toFixed(2)}</p>
           <h3
             style={{
               textAlign: "right",
@@ -100,10 +137,7 @@ const Checkout = () => {
               fontWeight: "bold",
             }}
           >
-            Total: R
-            {cart
-              .reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
-              .toFixed(2)}
+            Total: R{(total + deliveryFee).toFixed(2)}
           </h3>
 
           <button
@@ -111,7 +145,7 @@ const Checkout = () => {
             style={{
               marginTop: "25px",
               width: "100%",
-              background: "linear-gradient(135deg, #007bff, #00c853)",
+              background: "linear-gradient(135deg, #007bff, #00c8ff)",
               color: "white",
               border: "none",
               padding: "15px",
@@ -122,12 +156,6 @@ const Checkout = () => {
               boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
               transition: "all 0.3s ease",
             }}
-            onMouseOver={(e) =>
-              (e.target.style.background = "linear-gradient(135deg, #00c853, #007bff)")
-            }
-            onMouseOut={(e) =>
-              (e.target.style.background = "linear-gradient(135deg, #007bff, #00c853)")
-            }
           >
             💳 Pay with PayFast
           </button>
