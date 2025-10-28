@@ -9,8 +9,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Replace with your actual PayFast merchant details
-const PAYFAST_MERCHANT_ID = 'YOUR_MERCHANT_ID';
-const PAYFAST_MERCHANT_KEY = 'YOUR_MERCHANT_KEY';
+const PAYFAST_MERCHANT_ID = '21640826';
+const PAYFAST_MERCHANT_KEY = 'lbwzjvmjwbsfj';
 
 // URLs
 const RETURN_URL = 'http://localhost:3000/success';
