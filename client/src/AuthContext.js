@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
+
+// ✅ Define your backend API base URL
+const API_BASE = "https://mg-s-traders.onrender.com";
 
 const AuthContext = createContext();
 
@@ -8,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  // ✅ signup function
+  // ✅ SIGNUP function
   const signup = async (email, password) => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/signup`, {
@@ -16,8 +19,8 @@ export const AuthProvider = ({ children }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
 
+      const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Signup failed");
 
       alert("Signup successful! Please log in.");
@@ -28,16 +31,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ login function
+  // ✅ LOGIN function
   const login = async (email, password) => {
     try {
-      const res = await fetch("https://mg-s-traders.onrender.com/api/auth/login", {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
 
+      const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
 
       localStorage.setItem("token", data.token);
@@ -50,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ logout function
+  // ✅ LOGOUT function
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -65,5 +68,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
 
