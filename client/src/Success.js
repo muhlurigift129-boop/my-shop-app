@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Success = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -26,7 +27,7 @@ const Success = () => {
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      <h1 style={{ color: "#00c853" }}>✅ Payment Successful!</h1>
+      <h1 style={{ color: "green" }}>✅ Payment Successful!</h1>
       <p style={{ fontSize: "16px", marginTop: "10px" }}>
         Thank you for your order from MGS Traders. Here’s your summary:
       </p>
@@ -48,7 +49,7 @@ const Success = () => {
           padding: "12px 25px",
           fontSize: "16px",
           fontWeight: "bold",
-          color: "#fff",
+          color: "blue",
           background: "linear-gradient(135deg, #00c853, #007bff)",
           border: "none",
           borderRadius: "35px",
