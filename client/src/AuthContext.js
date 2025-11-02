@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 // ✅ Define your backend API base URL
-const API_BASE = "https://mg-s-traders.onrender.com";
+const API_BASE = "https://mgs-traders-h8np.onrender.com";
 
 const AuthContext = createContext();
 
