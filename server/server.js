@@ -6,10 +6,10 @@ import userRoutes from "./routes/userRoutes.js";
 import payfastRoutes from "./routes/payfastRoutes.js";
 import authRoutes from "./routes/auth.js";
 import checkoutRoutes from "./routes/checkout.js";
+import sqlite3pkg from "sqlite3"; // ✅ change this to ES import
 
 // ====== AUTO DATABASE SETUP ======
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("./database.sqlite");
+const sqlite3 = sqlite3pkg.verbose();
 
 db.serialize(() => {
   db.run(`
