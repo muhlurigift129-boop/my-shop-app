@@ -2,14 +2,16 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import sqlite3pkg from "sqlite3";
+
 import userRoutes from "./routes/userRoutes.js";
 import payfastRoutes from "./routes/payfastRoutes.js";
 import authRoutes from "./routes/auth.js";
 import checkoutRoutes from "./routes/checkout.js";
-import sqlite3pkg from "sqlite3"; // ✅ change this to ES import
 
 // ====== AUTO DATABASE SETUP ======
 const sqlite3 = sqlite3pkg.verbose();
+const db = new sqlite3.Database("./database.sqlite");
 
 db.serialize(() => {
   db.run(`
@@ -26,6 +28,7 @@ db.serialize(() => {
 db.close();
 // ====== END AUTO DATABASE SETUP ======
 
+// ====== EXPRESS SETUP ======
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -36,7 +39,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/payfast", payfastRoutes);
 app.use("/api/checkout", checkoutRoutes);
 
-// --- serve React frontend ---
+// ====== SERVE REACT FRONTEND ======
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -46,6 +49,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
-// --- start server ---
+// ====== START SERVER ======
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
