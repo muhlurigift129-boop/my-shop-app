@@ -1,0 +1,12 @@
+import express from "express";
+import fetch from "node-fetch";
+
+const router = express.Router();
+
+// ✅ Use your live PayFast credentials here
+const PAYFAST_MERCHANT_ID = process.env.PAYFAST_MERCHANT_ID || "10043359";
+const PAYFAST_MERCHANT_KEY = process.env.PAYFAST_MERCHANT_KEY || "6gu0dx1r5742n";
+const PAYFAST_PASSPHRASE = process.env.PAYFAST_PASSPHRASE || "MGS-Traders2025"; // optional
+
+const PAYFAST_URL = "https://www.payfast.co.za/eng/process";
+

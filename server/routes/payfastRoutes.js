@@ -5,9 +5,9 @@ import axios from "axios";
 const router = express.Router();
 
 // ⚙️ PayFast credentials
-const merchantId = process.env.PAYFAST_MERCHANT_ID;
-const merchantKey = process.env.PAYFAST_MERCHANT_KEY;
-const passphrase = process.env.PAYFAST_PASSPHRASE;
+const PAYFAST_MERCHANT_ID = process.env.PAYFAST_MERCHANT_ID || "10043359";
+const PAYFAST_PASS_PHRASE = process.env.PAYFAST_PASS_PHRASE || "MGS-Traders2025";
+const PAYFAST_MERCHANT_KEY = process.env.PAYFAST_MERCHANT_KEY  || "6gu0dx1r5742n";
 
 // ✅ Handle PayFast Notify (ITN)
 router.post("/notify", async (req, res) => {
