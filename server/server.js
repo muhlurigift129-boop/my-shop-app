@@ -7,6 +7,25 @@ import payfastRoutes from "./routes/payfastRoutes.js";
 import authRoutes from "./routes/auth.js";
 import checkoutRoutes from "./routes/checkout.js";
 
+// ====== AUTO DATABASE SETUP ======
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("./database.sqlite");
+
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      email TEXT UNIQUE,
+      password TEXT
+    )
+  `);
+  console.log("✅ Users table checked/created");
+});
+
+db.close();
+// ====== END AUTO DATABASE SETUP ======
+
 const app = express();
 app.use(cors());
 app.use(express.json());
