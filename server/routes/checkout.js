@@ -6,11 +6,11 @@ const router = express.Router();
 
 // PayFast sandbox URL (for testing)
 const PAYFAST_URL = "https://sandbox.payfast.co.za/eng/process";
-const MERCHANT_ID = "10031297"; // replace with your real one
-const MERCHANT_KEY = "46jks7giw6n3q";
-const RETURN_URL = "http://localhost:3000/success";
-const CANCEL_URL = "http://localhost:3000/cancel";
-const NOTIFY_URL = "http://localhost:5000/api/payfast/notify";
+const MERCHANT_ID = "10043359"; // replace with your real one
+const MERCHANT_KEY = "6gu0dx1r5742n";
+const RETURN_URL = "https://mgs-traders-client.onrender.com/success";
+const CANCEL_URL = "https://mgs-traders-client.onrender.com/cancel";
+const NOTIFY_URL = "https://mgs-traders-h8np.onrender.com/api/payfast/notify";
 
 // Middleware to check if user is logged in
 const verifyToken = (req, res, next) => {
